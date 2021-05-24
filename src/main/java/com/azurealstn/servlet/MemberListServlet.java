@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import main.java.com.azurealstn.dao.MemberDao;
 import main.java.com.azurealstn.vo.Member;
 
 @WebServlet("/member/list")
@@ -28,42 +29,19 @@ public class MemberListServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// 데이터베이스 관련 객체의 참조변수 선언 (패키지: java.sql)
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+		// 데이터베이스 관련 객체의 참조변수 선언 (패키지: java.sql) -> DAO 사용
 
 		// JDBC API 사용시 예외처리 (예외발생시 ServletException객체에 담아 서블릿컨테이너에 전달)
 		try {
 			ServletContext sc = this.getServletContext();
-			// 클래스이름은 반드시 패키지 이름을 포함해야 하는데 이를 영어로 'fully qualified name' or 'QName'
-			/*Class.forName(sc.getInitParameter("driver"));
-			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
-					sc.getInitParameter("password")); AppInitServlet으로 ServletContext에 이미 저장되어있다.*/
+			Connection conn = (Connection) sc.getAttribute("conn");
 			
-			// Connection 구현체를 이용하여 SQL문을 실행할 객체
-			// Statement 인터페이스는 DB에 질의하는데 필요한 메소드가 정의되어 있다.
-			conn = (Connection) sc.getAttribute("conn");
-			stmt = conn.createStatement();
-			// ResultSet 인터페이스는 서버에서 질의 결과를 가져올 수 있다.
-			rs = stmt.executeQuery("SELECT MNO,MNAME,EMAIL,CRE_DATE" + " FROM MEMBERS" + " ORDER BY MNO ASC");
-
-			res.setContentType("text/html; charset=UTF-8");
-			ArrayList<Member> members = new ArrayList<Member>();
-			// select 결과 가져오기 (행(row)을 가져옴)
-			//DB에서 회원정보를 가져와 Member 객체에 담는다.
-			//그리고 Member 객체를 ArrayList에 add한다.
-			while (rs.next()) {
-				members.add(new Member()
-						.setNo(rs.getInt("MNO"))
-						.setName(rs.getString("MNAME"))
-						.setEmail(rs.getString("EMAIL"))
-						.setCreateDate(rs.getDate("CRE_DATE")));
-			}
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
 			
 			//request에 회원목록 데이터를 보관한다.
-			req.setAttribute("members", members);
-			
+			req.setAttribute("members", memberDao.selectList());
+			res.setContentType("text/html; charset=UTF-8");
 			//JSP로 출력을 위임한다.
 			RequestDispatcher rd = req.getRequestDispatcher("/member/MemberList.jsp");
 			rd.include(req, res);
@@ -72,11 +50,7 @@ public class MemberListServlet extends HttpServlet {
 			req.setAttribute("error", e);
 			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
 			rd.forward(req, res);
-		} finally {
-			try {if (rs != null) rs.close();} catch(Exception e) {}
-			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			//try {if (conn != null) conn.close();} catch(Exception e) {}
-		}
+		} 
 	}
 
 }
