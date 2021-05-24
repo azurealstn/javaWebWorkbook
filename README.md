@@ -10,6 +10,7 @@
 - Java 11
 - 서블릿(GenericServlet, HttpServlet)
 - MySQL(8.0.22) - DBeaver(GUI)
+- JSP
 
 <br/>
 <br/>

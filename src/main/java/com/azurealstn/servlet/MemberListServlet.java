@@ -34,10 +34,8 @@ public class MemberListServlet extends HttpServlet {
 		// JDBC API 사용시 예외처리 (예외발생시 ServletException객체에 담아 서블릿컨테이너에 전달)
 		try {
 			ServletContext sc = this.getServletContext();
-			Connection conn = (Connection) sc.getAttribute("conn");
 			
-			MemberDao memberDao = new MemberDao();
-			memberDao.setConnection(conn);
+			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 			
 			//request에 회원목록 데이터를 보관한다.
 			req.setAttribute("members", memberDao.selectList());
