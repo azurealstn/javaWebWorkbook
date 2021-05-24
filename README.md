@@ -17,3 +17,6 @@
 ## 기능
 
 - 회원목록: http://localhost:8090/javaWebWorkbook/member/list
+- 회원수정(상세보기): http://localhost:8090/javaWebWorkbook/member/update?no=?
+- 회원삭제: http://localhost:8090/javaWebWorkbook/member/delete?no=?
+	- 삭제같은 경우는 바로 remove시키면 되기 때문에 doGet() 요청으로 삭제쿼리를 날립니다.
