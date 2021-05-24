@@ -83,9 +83,10 @@ public class MemberUpdateServlet extends HttpServlet {
 		PreparedStatement stmt = null;
 		try {
 			ServletContext sc = this.getServletContext();
-			Class.forName(sc.getInitParameter("driver"));
+			/*Class.forName(sc.getInitParameter("driver"));
 			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
-					sc.getInitParameter("password"));
+					sc.getInitParameter("password"));*/
+			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=now()" + " WHERE MNO=?");
 			stmt.setString(1, request.getParameter("email"));
 			stmt.setString(2, request.getParameter("name"));
@@ -98,16 +99,8 @@ public class MemberUpdateServlet extends HttpServlet {
 			throw new ServletException(e);
 
 		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-			}
+			try {if (stmt != null) stmt.close();} catch(Exception e) {}
+			//try {if (conn != null) conn.close();} catch(Exception e) {}
 		}
 	}
 

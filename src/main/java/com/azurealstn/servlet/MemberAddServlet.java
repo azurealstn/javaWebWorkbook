@@ -46,9 +46,10 @@ public class MemberAddServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			// 클래스이름은 반드시 패키지 이름을 포함해야 하는데 이를 영어로 'fully qualified name' or 'QName'
-			Class.forName(sc.getInitParameter("driver"));
+			/*Class.forName(sc.getInitParameter("driver"));
 			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
-					sc.getInitParameter("password"));
+					sc.getInitParameter("password"));*/
+			conn = (Connection) sc.getAttribute("conn");
 			//PreparedStatement는 ?로 되어있는데 이것은 입력 매개변수가 많은 경우에 유용함.
 			//또한 이미지와 같은 바이너리 데이터를 저장하거나 변경할 때 사용.
 			stmt = conn.prepareStatement(
@@ -80,7 +81,7 @@ public class MemberAddServlet extends HttpServlet {
 			
 		} finally {
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			try {if (conn != null) conn.close();} catch(Exception e) {}
+			//try {if (conn != null) conn.close();} catch(Exception e) {}
 		}
 	}
 
