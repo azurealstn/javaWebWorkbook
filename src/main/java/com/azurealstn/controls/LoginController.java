@@ -4,24 +4,25 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import main.java.com.azurealstn.dao.MemberDao;
+import main.java.com.azurealstn.bind.DataBinding;
+import main.java.com.azurealstn.dao.MySqlMemberDao;
 import main.java.com.azurealstn.vo.Member;
 
-public class LoginController implements Controller {
-	MemberDao memberDao;
+public class LoginController implements Controller, DataBinding {
+	MySqlMemberDao memberDao;
 	
-	public LoginController setMemberDao(MemberDao memberDao) {
+	public LoginController setMemberDao(MySqlMemberDao memberDao) {
 	    this.memberDao = memberDao;
 	    return this;
 	} 
 
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
-		if (model.get("loginInfo") == null) {
+		Member loginInfo = (Member) model.get("loginInfo");
+		
+		if (loginInfo.getEmail() == null) {
 			return "/auth/LoginForm.jsp";
 		} else {
-			Member loginInfo = (Member) model.get("loginInfo");
-			
 			Member member = memberDao.exist(loginInfo.getEmail(), loginInfo.getPassword());
 			
 			if (member != null) {
@@ -32,6 +33,13 @@ public class LoginController implements Controller {
 				return "/auth/LoginFail.jsp";
 			}
 		}
+	}
+
+	@Override
+	public Object[] getDataBinders() {
+		return new Object[] {
+			"loginInfo", main.java.com.azurealstn.vo.Member.class
+		};
 	}
 
 }

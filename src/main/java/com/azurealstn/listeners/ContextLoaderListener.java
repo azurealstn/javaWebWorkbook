@@ -19,7 +19,7 @@ import main.java.com.azurealstn.controls.MemberAddController;
 import main.java.com.azurealstn.controls.MemberDeleteController;
 import main.java.com.azurealstn.controls.MemberListController;
 import main.java.com.azurealstn.controls.MemberUpdateController;
-import main.java.com.azurealstn.dao.MemberDao;
+import main.java.com.azurealstn.dao.MySqlMemberDao;
 import main.java.com.azurealstn.util.DBConnectionPool;
 
 @WebListener
@@ -38,7 +38,7 @@ public class ContextLoaderListener implements ServletContextListener {
 			InitialContext initialContext = new InitialContext();
 			DataSource ds = (DataSource) initialContext.lookup("java:comp/env/jdbc/study_db");
 			
-			MemberDao memberDao = new MemberDao();
+			MySqlMemberDao memberDao = new MySqlMemberDao();
 			memberDao.setDataSource(ds);
 			
 			//setter 주입

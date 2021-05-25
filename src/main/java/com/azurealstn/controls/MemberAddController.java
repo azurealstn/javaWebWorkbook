@@ -2,28 +2,34 @@ package main.java.com.azurealstn.controls;
 
 import java.util.Map;
 
-import main.java.com.azurealstn.dao.MemberDao;
+import main.java.com.azurealstn.bind.DataBinding;
+import main.java.com.azurealstn.dao.MySqlMemberDao;
 import main.java.com.azurealstn.vo.Member;
 
-public class MemberAddController implements Controller {
-	MemberDao memberDao;
+public class MemberAddController implements Controller, DataBinding {
+	MySqlMemberDao memberDao;
 	
-	public MemberAddController setMemberDao(MemberDao memberDao) {
+	public MemberAddController setMemberDao(MySqlMemberDao memberDao) {
 	    this.memberDao = memberDao;
 	    return this;
 	} 
 
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
-		if (model.get("member") == null) {
+		Member member = (Member) model.get("member");
+		if (member.getEmail() == null) {
 			return "/member/MemberForm.jsp";
 		} else {
-			
-			Member member = (Member) model.get("member");
 			memberDao.insert(member);
-			
 			return "redirect:list.do";
 		}
+	}
+
+	@Override
+	public Object[] getDataBinders() {
+		return new Object[] {
+			"member", main.java.com.azurealstn.vo.Member.class
+		};
 	}
 
 }

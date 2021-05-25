@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import main.java.com.azurealstn.dao.MemberDao;
+import main.java.com.azurealstn.dao.MySqlMemberDao;
 import main.java.com.azurealstn.vo.Member;
 
 //프론트 컨트롤러 적용
@@ -36,7 +36,7 @@ public class MemberListServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			
-			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
+			MySqlMemberDao memberDao = (MySqlMemberDao) sc.getAttribute("memberDao");
 			
 			//request에 회원목록 데이터를 보관한다.
 			req.setAttribute("members", memberDao.selectList());

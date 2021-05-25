@@ -2,12 +2,13 @@ package main.java.com.azurealstn.controls;
 
 import java.util.Map;
 
-import main.java.com.azurealstn.dao.MemberDao;
+import main.java.com.azurealstn.bind.DataBinding;
+import main.java.com.azurealstn.dao.MySqlMemberDao;
 
-public class MemberDeleteController implements Controller {
-	MemberDao memberDao;
+public class MemberDeleteController implements Controller, DataBinding {
+	MySqlMemberDao memberDao;
 	
-	public MemberDeleteController setMemberDao(MemberDao memberDao) {
+	public MemberDeleteController setMemberDao(MySqlMemberDao memberDao) {
 		this.memberDao = memberDao;
 		return this;
 	}
@@ -19,6 +20,13 @@ public class MemberDeleteController implements Controller {
 		memberDao.delete(no);
 		
 		return "redirect:list.do";
+	}
+
+	@Override
+	public Object[] getDataBinders() {
+		return new Object[] {
+			"no", Integer.class
+		};
 	}
 
 	
