@@ -9,17 +9,17 @@
 
 - Java 11
 - 서블릿 3.1(GenericServlet, HttpServlet)
-- MySQL(8.0.22) - DBeaver(GUI)
 - JSP 2.3
+- MySQL(8.0.22) - DBeaver(GUI)
 
 <br/>
 <br/>
 
 ## 기능
 
-- 회원목록: http://localhost:8090/javaWebWorkbook/member/list
-- 회원수정(상세보기): http://localhost:8090/javaWebWorkbook/member/update?no=?
-- 회원삭제: http://localhost:8090/javaWebWorkbook/member/delete?no=?
+- 회원목록: http://localhost:8090/javaWebWorkbook/member/list.do
+- 회원수정(상세보기): http://localhost:8090/javaWebWorkbook/member/update.do?no=?
+- 회원삭제: http://localhost:8090/javaWebWorkbook/member/delete.do?no=?
 	- 삭제같은 경우는 바로 remove시키면 되기 때문에 doGet() 요청으로 삭제쿼리를 날립니다.
-- 로그인: http://localhost:8090/javaWebWorkbook/auth/login
-- 로그아웃: http://localhost:8090/javaWebWorkbook/auth/logout
+- 로그인: http://localhost:8090/javaWebWorkbook/auth/login.do
+- 로그아웃: http://localhost:8090/javaWebWorkbook/auth/logout.do

@@ -13,10 +13,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import main.java.com.azurealstn.annotation.Component;
 import main.java.com.azurealstn.util.DBConnectionPool;
 import main.java.com.azurealstn.vo.Member;
 
 
+@Component("memberDao")
 public class MySqlMemberDao implements MemberDao {
 	
 	DataSource ds;

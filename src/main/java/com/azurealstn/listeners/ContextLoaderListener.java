@@ -41,7 +41,6 @@ public class ContextLoaderListener implements ServletContextListener {
 		try {
 			ServletContext sc = sce.getServletContext();
 			
-			
 			String propertiesPath = sc.getRealPath(sc.getInitParameter("contextConfigLocation"));
 			applicationContext = new ApplicationContext(propertiesPath);
 			

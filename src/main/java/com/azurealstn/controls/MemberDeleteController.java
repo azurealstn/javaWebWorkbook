@@ -2,9 +2,12 @@ package main.java.com.azurealstn.controls;
 
 import java.util.Map;
 
+import main.java.com.azurealstn.annotation.Component;
 import main.java.com.azurealstn.bind.DataBinding;
 import main.java.com.azurealstn.dao.MySqlMemberDao;
 
+
+@Component("/member/delete.do")
 public class MemberDeleteController implements Controller, DataBinding {
 	MySqlMemberDao memberDao;
 	

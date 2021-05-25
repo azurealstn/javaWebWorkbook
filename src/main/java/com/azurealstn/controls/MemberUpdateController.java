@@ -2,10 +2,13 @@ package main.java.com.azurealstn.controls;
 
 import java.util.Map;
 
+import main.java.com.azurealstn.annotation.Component;
 import main.java.com.azurealstn.bind.DataBinding;
 import main.java.com.azurealstn.dao.MySqlMemberDao;
 import main.java.com.azurealstn.vo.Member;
 
+
+@Component("/member/update.do")
 public class MemberUpdateController implements Controller, DataBinding {
 	MySqlMemberDao memberDao;
 	

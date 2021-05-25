@@ -4,6 +4,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import main.java.com.azurealstn.annotation.Component;
+
+
+@Component("/auth/logout.do")
 public class LogoutController implements Controller {
 
 	@Override

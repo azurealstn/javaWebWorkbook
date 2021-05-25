@@ -2,8 +2,11 @@ package main.java.com.azurealstn.controls;
 
 import java.util.Map;
 
+import main.java.com.azurealstn.annotation.Component;
 import main.java.com.azurealstn.dao.MySqlMemberDao;
 
+
+@Component("/member/list.do")
 public class MemberListController implements Controller {
 	MySqlMemberDao memberDao;
 	

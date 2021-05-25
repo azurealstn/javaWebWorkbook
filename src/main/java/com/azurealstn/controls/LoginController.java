@@ -4,10 +4,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import main.java.com.azurealstn.annotation.Component;
 import main.java.com.azurealstn.bind.DataBinding;
 import main.java.com.azurealstn.dao.MySqlMemberDao;
 import main.java.com.azurealstn.vo.Member;
 
+
+@Component("/auth/login.do")
 public class LoginController implements Controller, DataBinding {
 	MySqlMemberDao memberDao;
 	
