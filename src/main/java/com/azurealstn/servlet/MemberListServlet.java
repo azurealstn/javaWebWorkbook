@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import main.java.com.azurealstn.dao.MemberDao;
 import main.java.com.azurealstn.vo.Member;
 
+//프론트 컨트롤러 적용
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
 
@@ -39,15 +40,11 @@ public class MemberListServlet extends HttpServlet {
 			
 			//request에 회원목록 데이터를 보관한다.
 			req.setAttribute("members", memberDao.selectList());
-			res.setContentType("text/html; charset=UTF-8");
-			//JSP로 출력을 위임한다.
-			RequestDispatcher rd = req.getRequestDispatcher("/member/MemberList.jsp");
-			rd.include(req, res);
+			
+			req.setAttribute("viewUrl", "/member/MemberList.jsp");
+			
 		} catch (Exception e) {
-			//throw new ServletException(e);
-			req.setAttribute("error", e);
-			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
-			rd.forward(req, res);
+			throw new ServletException(e);
 		} 
 	}
 

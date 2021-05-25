@@ -24,8 +24,7 @@ public class LoginServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		RequestDispatcher rd = req.getRequestDispatcher("/auth/LoginForm.jsp");
-		rd.forward(req, resp);
+		req.setAttribute("viewUrl", "/auth/LoginForm.jsp");
 	}
 
 	@Override
@@ -40,7 +39,9 @@ public class LoginServlet extends HttpServlet {
 			if (member != null) {
 				HttpSession session = req.getSession();
 				session.setAttribute("member", member);
-				resp.sendRedirect("../member/list");
+				req.setAttribute("viewUrl", "redirect:../member/list.do");
+			} else {
+				req.setAttribute("viewUrl", "/auth/LoginFail.jsp");
 			}
 
 		} catch(Exception e) {

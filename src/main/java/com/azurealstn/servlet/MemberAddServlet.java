@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import main.java.com.azurealstn.dao.MemberDao;
 import main.java.com.azurealstn.vo.Member;
 
+
+//프론트 컨트롤러 적용
 @WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet {
 	
@@ -24,8 +26,7 @@ public class MemberAddServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		RequestDispatcher rd = req.getRequestDispatcher("/member/MemberForm.jsp");
-		rd.forward(req, resp);
+		req.setAttribute("viewUrl", "/member/MemberForm.jsp");
 		
 	}
 
@@ -36,18 +37,13 @@ public class MemberAddServlet extends HttpServlet {
 			
 			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 			
-			memberDao.insert(new Member()
-					.setEmail(req.getParameter("email"))
-					.setPassword(req.getParameter("password"))
-					.setName(req.getParameter("name")));
+			Member member = (Member) req.getAttribute("member");
+			memberDao.insert(member);
 			
-			resp.sendRedirect("list");
+			req.setAttribute("viewUrl", "redirect:list.do");
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			req.setAttribute("error", e);
-			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
-			rd.forward(req, resp);
+			throw new ServletException(e);
 		} 
 	}
 
