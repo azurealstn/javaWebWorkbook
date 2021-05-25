@@ -8,13 +8,18 @@ import main.java.com.azurealstn.dao.MemberDao;
 import main.java.com.azurealstn.vo.Member;
 
 public class LoginController implements Controller {
+	MemberDao memberDao;
+	
+	public LoginController setMemberDao(MemberDao memberDao) {
+	    this.memberDao = memberDao;
+	    return this;
+	} 
 
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
 		if (model.get("loginInfo") == null) {
 			return "/auth/LoginForm.jsp";
 		} else {
-			MemberDao memberDao = (MemberDao) model.get("memberDao");
 			Member loginInfo = (Member) model.get("loginInfo");
 			
 			Member member = memberDao.exist(loginInfo.getEmail(), loginInfo.getPassword());

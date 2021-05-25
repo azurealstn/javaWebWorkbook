@@ -13,6 +13,12 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
+import main.java.com.azurealstn.controls.LoginController;
+import main.java.com.azurealstn.controls.LogoutController;
+import main.java.com.azurealstn.controls.MemberAddController;
+import main.java.com.azurealstn.controls.MemberDeleteController;
+import main.java.com.azurealstn.controls.MemberListController;
+import main.java.com.azurealstn.controls.MemberUpdateController;
 import main.java.com.azurealstn.dao.MemberDao;
 import main.java.com.azurealstn.util.DBConnectionPool;
 
@@ -35,7 +41,14 @@ public class ContextLoaderListener implements ServletContextListener {
 			MemberDao memberDao = new MemberDao();
 			memberDao.setDataSource(ds);
 			
-			sc.setAttribute("memberDao", memberDao);
+			//setter 주입
+			sc.setAttribute("/auth/login.do", new LoginController().setMemberDao(memberDao));
+			sc.setAttribute("/auth/logout.do", new LogoutController());
+			sc.setAttribute("/member/list.do", new MemberListController().setMemberDao(memberDao));
+			sc.setAttribute("/member/add.do", new MemberAddController().setMemberDao(memberDao));
+			sc.setAttribute("/member/update.do", new MemberUpdateController().setMemberDao(memberDao));
+			sc.setAttribute("/member/delete.do", new MemberDeleteController().setMemberDao(memberDao));
+			
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}
