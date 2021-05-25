@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import main.java.com.azurealstn.bind.DataBinding;
 import main.java.com.azurealstn.bind.ServletRequestDataBinder;
+import main.java.com.azurealstn.context.ApplicationContext;
 import main.java.com.azurealstn.controls.Controller;
 import main.java.com.azurealstn.controls.LoginController;
 import main.java.com.azurealstn.controls.LogoutController;
@@ -23,6 +24,7 @@ import main.java.com.azurealstn.controls.MemberAddController;
 import main.java.com.azurealstn.controls.MemberDeleteController;
 import main.java.com.azurealstn.controls.MemberListController;
 import main.java.com.azurealstn.controls.MemberUpdateController;
+import main.java.com.azurealstn.listeners.ContextLoaderListener;
 import main.java.com.azurealstn.vo.Member;
 
 @SuppressWarnings("serial")
@@ -37,12 +39,15 @@ public class DispatcherServlet extends HttpServlet {
     response.setContentType("text/html; charset=UTF-8");
     String servletPath = request.getServletPath();
     try {
-      ServletContext sc = this.getServletContext();
+      ApplicationContext ctx = ContextLoaderListener.getApplicationContext();
       
       HashMap<String, Object> model = new HashMap<String, Object>();
       model.put("session", request.getSession());
       
-      Controller pageController = (Controller) sc.getAttribute(servletPath);
+      Controller pageController = (Controller) ctx.getBean(servletPath);
+      if (pageController == null) {
+    	  throw new Exception("요청한 서비스를 찾을 수 없습니다.");
+      }
       
       if (pageController instanceof DataBinding) {
     	  prepareRequestData(request, model, (DataBinding) pageController);

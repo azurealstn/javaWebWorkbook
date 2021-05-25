@@ -5,6 +5,10 @@
 	id="WebApp_ID" version="3.1">
 	<display-name>javaWebWorkbook</display-name>
 
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/application-context.properties</param-value>
+	</context-param>
 	<resource-ref>
 		<res-ref-name>jdbc/study_db</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
