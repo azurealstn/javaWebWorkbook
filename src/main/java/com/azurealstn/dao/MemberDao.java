@@ -11,6 +11,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 import main.java.com.azurealstn.util.DBConnectionPool;
 import main.java.com.azurealstn.vo.Member;
@@ -18,10 +19,10 @@ import main.java.com.azurealstn.vo.Member;
 
 public class MemberDao {
 	
-	DBConnectionPool connPool;
+	DataSource ds;
 	
-	public void setDbConnectionPool(DBConnectionPool connPool) {
-		this.connPool = connPool;
+	public void setDataSource(DataSource ds) {
+		this.ds = ds;
 	}
 	
 	public List<Member> selectList() throws Exception {
@@ -30,7 +31,7 @@ public class MemberDao {
 		ResultSet rs = null;
 		
 		try {
-			connection = connPool.getConnection();
+			connection = ds.getConnection();
 			// Statement 인터페이스는 DB에 질의하는데 필요한 메소드가 정의되어 있다.
 			stmt = connection.createStatement();
 			// ResultSet 인터페이스는 서버에서 질의 결과를 가져올 수 있다.
@@ -55,7 +56,7 @@ public class MemberDao {
 		} finally {
 			try {if (rs != null) rs.close(); } catch(Exception e) {}
 			try {if (stmt != null) stmt.close(); } catch(Exception e) {}
-			if (connection != null) connPool.returnConnection(connection);
+			try {if (connection != null) connection.close(); } catch(Exception e) {}
 		}
 	}
 
@@ -64,7 +65,7 @@ public class MemberDao {
 		PreparedStatement stmt = null;
 
 		try {
-			connection = connPool.getConnection();
+			connection = ds.getConnection();
 			stmt = connection.prepareStatement(
 					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" + " VALUES (?,?,?,NOW(),NOW())");
 			// setXXX() 메소드를 호출하여 ?값을 설정합니다.
@@ -79,7 +80,7 @@ public class MemberDao {
 
 		} finally {
 		      try {if (stmt != null) stmt.close();} catch(Exception e) {}
-		      if (connection != null) connPool.returnConnection(connection);
+		      try {if (connection != null) connection.close(); } catch(Exception e) {}
 	    }
 	}
 	
@@ -89,7 +90,7 @@ public class MemberDao {
 		Statement stmt = null;
 
 		try {
-			connection = connPool.getConnection();
+			connection = ds.getConnection();
 			stmt = connection.createStatement();
 			return stmt.executeUpdate(
 					"DELETE FROM MEMBERS WHERE MNO=" + no);
@@ -99,7 +100,7 @@ public class MemberDao {
 			
 		} finally {
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			if (connection != null) connPool.returnConnection(connection);
+			try {if (connection != null) connection.close(); } catch(Exception e) {}
 		}
 	}
 	
@@ -109,7 +110,7 @@ public class MemberDao {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			connection = connPool.getConnection();
+			connection = ds.getConnection();
 			stmt = connection.createStatement();
 			rs = stmt.executeQuery(
 					"SELECT MNO,EMAIL,MNAME,CRE_DATE FROM MEMBERS" + " WHERE MNO=" + no);
@@ -129,7 +130,7 @@ public class MemberDao {
 		} finally {
 			try {if (rs != null) rs.close();} catch(Exception e) {}
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			if (connection != null) connPool.returnConnection(connection);
+			try {if (connection != null) connection.close(); } catch(Exception e) {}
 		}
 	}
 	
@@ -138,7 +139,7 @@ public class MemberDao {
 		Connection connection = null;
 		PreparedStatement stmt = null;
 		try {
-			connection = connPool.getConnection();
+			connection = ds.getConnection();
 			stmt = connection.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=now()" + " WHERE MNO=?");
 			stmt.setString(1, member.getEmail());
 			stmt.setString(2, member.getName());
@@ -148,7 +149,7 @@ public class MemberDao {
 			throw e;
 		} finally {
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			if (connection != null) connPool.returnConnection(connection);
+			try {if (connection != null) connection.close(); } catch(Exception e) {}
 		}
 	}
 	
@@ -159,7 +160,7 @@ public class MemberDao {
 		ResultSet rs = null;
 		
 		try {
-			connection = connPool.getConnection();
+			connection = ds.getConnection();
 			stmt = connection.prepareStatement(
 					"select mname,email from members where email=? and pwd=?");
 			stmt.setString(1, email);
@@ -177,7 +178,7 @@ public class MemberDao {
 		} finally {
 			try {if (rs != null) rs.close(); } catch (Exception e) {}
 			try {if (stmt != null) rs.close(); } catch (Exception e) {}
-			if (connection != null) connPool.returnConnection(connection);
+			try {if (connection != null) connection.close(); } catch(Exception e) {}
 		}
 	}
 }

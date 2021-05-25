@@ -8,9 +8,9 @@
 ## 사용 기술
 
 - Java 11
-- 서블릿(GenericServlet, HttpServlet)
+- 서블릿 3.1(GenericServlet, HttpServlet)
 - MySQL(8.0.22) - DBeaver(GUI)
-- JSP
+- JSP 2.3
 
 <br/>
 <br/>
