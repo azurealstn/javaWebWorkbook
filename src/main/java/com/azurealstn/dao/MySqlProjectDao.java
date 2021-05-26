@@ -5,172 +5,114 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.sql.DataSource;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import main.java.com.azurealstn.annotation.Component;
 import main.java.com.azurealstn.vo.Project;
 
 @Component("projectDao")
 public class MySqlProjectDao implements ProjectDao {
-	DataSource ds;
+	SqlSessionFactory sqlSessionFactory;
 	
-	public void setDataSource(DataSource ds) {
-		this.ds = ds;
+	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
 	}
 
 	@Override
-	public List<Project> selectList() throws Exception {
-		Connection connection = null;
-	    Statement stmt = null;
-	    ResultSet rs = null;
+	public List<Project> selectList(HashMap<String, Object> paramMap) throws Exception {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 	    
 	    try {
-	      connection = ds.getConnection();
-	      stmt = connection.createStatement();
-	      rs = stmt.executeQuery(
-	          "SELECT PNO,PNAME,STA_DATE,END_DATE,STATE" + 
-	          " FROM PROJECTS" +
-	          " ORDER BY PNO DESC");
-
-	      ArrayList<Project> projects = new ArrayList<Project>();
-
-	      while(rs.next()) {
-	        projects.add(new Project()
-	          .setNo(rs.getInt("PNO"))
-	          .setTitle(rs.getString("PNAME"))
-	          .setStartDate(rs.getDate("STA_DATE"))
-	          .setEndDate(rs.getDate("END_DATE"))
-	          .setState(rs.getInt("STATE"))	);
-	      }
-
-	      return projects;
-
-	    } catch (Exception e) {
-	      throw e;
+	      return sqlSession.selectList("main.java.com.azurealstn.dao.ProjectDao.selectList", paramMap);
 
 	    } finally {
-	      try {if (rs != null) rs.close();} catch(Exception e) {}
-	      try {if (stmt != null) stmt.close();} catch(Exception e) {}
-	      try {if (connection != null) connection.close();} catch(Exception e) {}
+	      sqlSession.close();
 	    }
 	}
 
 	@Override
 	public int insert(Project project) throws Exception {
-		Connection connection = null;
-	    PreparedStatement stmt = null;
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 
 	    try {
-	      connection = ds.getConnection();
-	      stmt = connection.prepareStatement(
-	        "INSERT INTO PROJECTS"
-	        + "(PNAME,CONTENT,STA_DATE,END_DATE,STATE,CRE_DATE,TAGS)"
-	        + " VALUES (?,?,?,?,0,NOW(),?)");
-	      stmt.setString(1, project.getTitle());
-	      stmt.setString(2, project.getContent());
-	      stmt.setDate(3, new java.sql.Date(project.getStartDate().getTime()));
-	      stmt.setDate(4, new java.sql.Date(project.getEndDate().getTime()));
-	      stmt.setString(5, project.getTags());
-	      
-	      return stmt.executeUpdate();
-
-	    } catch (Exception e) {
-	      throw e;
+	    	int count = sqlSession.insert("main.java.com.azurealstn.dao.ProjectDao.insert", project);
+	    	sqlSession.commit();
+	    	return count;
 
 	    } finally {
-	      try {if (stmt != null) stmt.close();} catch(Exception e) {}
-	      try {if (connection != null) connection.close();} catch(Exception e) {}
+	    	sqlSession.close();
 	    }
 	}
 
 	@Override
 	public Project selectOne(int no) throws Exception {
-		Connection connection = null;
-	    Statement stmt = null;
-	    ResultSet rs = null;
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 	    try {
-	      connection = ds.getConnection();
-	      stmt = connection.createStatement();
-	      rs = stmt.executeQuery(
-	        "SELECT PNO,PNAME,CONTENT,STA_DATE,END_DATE,STATE,CRE_DATE,TAGS"
-	        + " FROM PROJECTS WHERE PNO=" + no);    
-	      if (rs.next()) {
-	        return new Project()
-	          .setNo(rs.getInt("PNO"))
-	          .setTitle(rs.getString("PNAME"))
-	          .setContent(rs.getString("CONTENT"))
-	          .setStartDate(rs.getDate("STA_DATE"))
-	          .setEndDate(rs.getDate("END_DATE"))
-	          .setState(rs.getInt("STATE")) 
-	          .setCreatedDate(rs.getDate("CRE_DATE"))
-	          .setTags(rs.getString("TAGS"));
+	    	return sqlSession.selectOne("main.java.com.azurealstn.dao.ProjectDao.selectOne", no);
 
-	      } else {
-	        throw new Exception("해당 번호의 프로젝트를 찾을 수 없습니다.");
-	      }
-
-	    } catch (Exception e) {
-	      throw e;
 	    } finally {
-	      try {if (rs != null) rs.close();} catch(Exception e) {}
-	      try {if (stmt != null) stmt.close();} catch(Exception e) {}
-	      try {if (connection != null) connection.close();} catch(Exception e) {}
+	    	sqlSession.close();
 	    }
 	}
 
 	@Override
 	public int update(Project project) throws Exception {
-		Connection connection = null;
-	    PreparedStatement stmt = null;
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 	    try {
-	      connection = ds.getConnection();
-	      stmt = connection.prepareStatement(
-	        "UPDATE PROJECTS SET "
-	        + " PNAME=?,"
-	        + " CONTENT=?,"
-	        + " STA_DATE=?,"
-	        + " END_DATE=?,"
-	        + " STATE=?,"
-	        + " TAGS=?"
-	        + " WHERE PNO=?");
-	      stmt.setString(1, project.getTitle());
-	      stmt.setString(2, project.getContent());
-	      stmt.setDate(3, new java.sql.Date(project.getStartDate().getTime()));
-	      stmt.setDate(4, new java.sql.Date(project.getEndDate().getTime()));
-	      stmt.setInt(5, project.getState());
-	      stmt.setString(6, project.getTags());
-	      stmt.setInt(7, project.getNo());
-	      
-	      return stmt.executeUpdate();
-
-	    } catch (Exception e) {
-	      throw e;
-
+	    	Project original = sqlSession.selectOne(
+	    			"main.java.com.azurealstn.dao.ProjectDao.selectOne", project.getNo());
+	    	
+	    	Hashtable<String,Object> paramMap = new Hashtable<String,Object>();
+	    	if (!project.getTitle().equals(original.getTitle())) {
+	    		paramMap.put("title", project.getTitle());
+	    	}
+	    	if (!project.getContent().equals(original.getContent())) {
+	    		paramMap.put("content", project.getContent());
+	    	}
+	    	if (project.getStartDate().compareTo(original.getStartDate()) != 0) {
+	    		paramMap.put("startDate", project.getStartDate());
+	    	}
+	    	if (project.getEndDate().compareTo(original.getEndDate()) != 0) {
+	    		paramMap.put("endDate", project.getEndDate());
+	    	}
+	    	if (project.getState() != original.getState()) {
+	    		paramMap.put("state", project.getState());
+	    	}
+	    	if (!project.getTags().equals(original.getTags())) {
+	    		paramMap.put("tags", project.getTags());
+	    	}
+	    	
+	    	if (paramMap.size() > 0) {
+	    		paramMap.put("no", project.getNo());
+	    		int count = sqlSession.update("main.java.com.azurealstn.dao.ProjectDao.update", paramMap);
+	    		sqlSession.commit();
+	    		return count;
+	    	} else {
+	    		return 0;
+	    	}
 	    } finally {
-	      try {if (stmt != null) stmt.close();} catch(Exception e) {}
-	      try {if (connection != null) connection.close();} catch(Exception e) {}
+	      sqlSession.close();
 	    }
 	}
 
 	@Override
 	public int delete(int no) throws Exception {
-		Connection connection = null;
-	    Statement stmt = null;
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 
 	    try {
-	      connection = ds.getConnection();
-	      stmt = connection.createStatement();
-	      return stmt.executeUpdate(
-	          "DELETE FROM PROJECTS WHERE PNO=" + no);
-
-	    } catch (Exception e) {
-	      throw e;
+	    	int count = sqlSession.delete("main.java.com.azurealstn.dao.ProjectDao.delete", no);
+	    	sqlSession.commit();
+	    	return count;
 
 	    } finally {
-	      try {if (stmt != null) stmt.close();} catch(Exception e) {}
-	      try {if (connection != null) connection.close();} catch(Exception e) {}
+	    	sqlSession.close();
 	    }
 	}
 
